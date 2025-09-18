@@ -8,6 +8,13 @@ export function ProjectContent() {
     
   if (loading) return <Loading />
 
+  // Helper function to extract author name
+  const getAuthorName = (author: string | { id: string; name: string; email: string; } | undefined): string => {
+    if (!author) return '';
+    if (typeof author === 'string') return author;
+    return author.name || '';
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -21,7 +28,6 @@ export function ProjectContent() {
           </span>
         </div>
       </div>
-
       {/* Error/Cache Status Banner */}
       {(error || usingCache) && (
         <div className={`rounded-lg p-3 border ${
@@ -52,7 +58,6 @@ export function ProjectContent() {
           </div>
         </div>
       )}
-
       {/* Projects Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         {projects.map((project, idx) => (
@@ -63,11 +68,10 @@ export function ProjectContent() {
             projectGithub={project?.projectGithub || ''}
             projectLink={project?.projectLink || ''}
             projectDescription={project?.projectDescription || ''}
-            projectAuthor={project?.projectAuthor || ''}
+            projectAuthor={getAuthorName(project?.projectAuthor)}
           />
         ))}
       </div>
-
       {/* Empty State */}
       {projects.length === 0 && !loading && (
         <div className="text-center py-12">
@@ -82,7 +86,6 @@ export function ProjectContent() {
           )}
         </div>
       )}
-
       <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg p-4 border border-purple-500/20 mt-6">
         <p className="text-white/70 text-sm italic">
           "Constantly learning and adapting to new technologies. The journey of a developer never ends!"
