@@ -2,6 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+// Helper function to safely get error message
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message
+  }
+  return String(error)
+}
+
+// Helper function to check if error is a Prisma error with a specific code
+function isPrismaError(error: unknown): error is { code: string; message: string } {
+  return (
+    error !== null &&
+    typeof error === 'object' &&
+    'code' in error &&
+    'message' in error &&
+    typeof (error as any).code === 'string'
+  )
+}
+
 export async function POST(request: NextRequest) {
   console.log('🚀 Signup API called')
   
@@ -9,10 +28,10 @@ export async function POST(request: NextRequest) {
     // Test database connection first
     await prisma.$connect()
     console.log('✅ Database connected')
-
+    
     const contentType = request.headers.get('content-type')
     console.log('📋 Content-Type:', contentType)
-
+    
     if (!contentType || !contentType.includes('application/json')) {
       console.log('❌ Invalid content type')
       return NextResponse.json(
@@ -25,8 +44,8 @@ export async function POST(request: NextRequest) {
     try {
       body = await request.json()
       console.log('📝 Request body received:', { ...body, password: '[HIDDEN]' })
-    } catch (error) {
-      console.log('❌ JSON parse error:', error)
+    } catch (parseError) {
+      console.log('❌ JSON parse error:', parseError)
       return NextResponse.json(
         { message: 'Invalid JSON in request body' },
         { status: 400 }
@@ -68,7 +87,7 @@ export async function POST(request: NextRequest) {
     const existingUser = await prisma.user.findUnique({
       where: { email: email.toLowerCase() }
     })
-
+    
     if (existingUser) {
       console.log('❌ User already exists')
       return NextResponse.json(
@@ -81,7 +100,6 @@ export async function POST(request: NextRequest) {
     
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12)
-
     console.log('👤 Creating user...')
     
     // Create user
@@ -100,34 +118,36 @@ export async function POST(request: NextRequest) {
     })
 
     console.log('✅ User created successfully:', { id: user.id, email: user.email })
-
+    
     return NextResponse.json({
       message: 'User created successfully',
       user
     }, { status: 201 })
-
+    
   } catch (error) {
     console.error('💥 Signup error:', error)
     
     // Check for specific Prisma errors
-    if (error.code === 'P2002') {
-      return NextResponse.json(
-        { message: 'Email already exists' },
-        { status: 409 }
-      )
+    if (isPrismaError(error)) {
+      if (error.code === 'P2002') {
+        return NextResponse.json(
+          { message: 'Email already exists' },
+          { status: 409 }
+        )
+      }
+      
+      if (error.code === 'P1001') {
+        return NextResponse.json(
+          { message: 'Database connection failed' },
+          { status: 500 }
+        )
+      }
     }
     
-    if (error.code === 'P1001') {
-      return NextResponse.json(
-        { message: 'Database connection failed' },
-        { status: 500 }
-      )
-    }
-
     return NextResponse.json(
       { 
         message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? getErrorMessage(error) : undefined
       },
       { status: 500 }
     )
