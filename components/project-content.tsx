@@ -72,11 +72,7 @@ export function ProjectContent() {
             projectLink={project?.projectLink || ''}
             projectDescription={project?.projectDescription || ''}
             projectAuthor={getAuthorName(project?.projectAuthor)}
-            featured={false} // Add default value since it's required
-            technologies={[]} // Add default empty array since it's required
             authorId={project.authorId}
-            createdAt={project.createdAt}
-            updatedAt={project.updatedAt}
           />
         ))}
       </div>
