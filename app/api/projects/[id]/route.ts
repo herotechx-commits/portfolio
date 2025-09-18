@@ -5,11 +5,13 @@ import jwt from 'jsonwebtoken'
 // GET single project
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const project = await prisma.project.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         projectAuthor: {
           select: {
@@ -41,9 +43,11 @@ export async function GET(
 // UPDATE project
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     // Check authentication
     const token = request.cookies.get('token')?.value
     if (!token) {
@@ -62,7 +66,7 @@ export async function PUT(
 
     // Check if project exists and user owns it
     const existingProject = await prisma.project.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingProject) {
@@ -80,7 +84,7 @@ export async function PUT(
     }
 
     const project = await prisma.project.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         projectName,
         projectImage,
@@ -115,9 +119,11 @@ export async function PUT(
 // DELETE project
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     // Check authentication
     const token = request.cookies.get('token')?.value
     if (!token) {
@@ -133,7 +139,7 @@ export async function DELETE(
 
     // Check if project exists and user owns it
     const existingProject = await prisma.project.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingProject) {
@@ -151,7 +157,7 @@ export async function DELETE(
     }
 
     await prisma.project.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({
