@@ -63,11 +63,7 @@ export function ProjectContent() {
         {projects.map((project, idx) => (
           <ProjectCard
             key={project.id}
-            projectTitle={project?.projectName || ''}
-            projectImage={project?.projectImage || ''}
-            projectGithub={project?.projectGithub || ''}
-            projectLink={project?.projectLink || ''}
-            projectDescription={project?.projectDescription || ''}
+            {...project}
             projectAuthor={getAuthorName(project?.projectAuthor)}
           />
         ))}
