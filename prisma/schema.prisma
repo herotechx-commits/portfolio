@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Admin user model - only updatable through backend
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relation to projects
+  projects  Project[]
+}
+
+// Project model
+model Project {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  projectName        String?
+  projectImage       String?
+  projectLink        String?
+  projectGithub      String?
+  projectDescription String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  // Relation to User (admin who created/manages the project)
+  authorId           String   @db.ObjectId
+  projectAuthor      User     @relation(fields: [authorId], references: [id])
+}
+
+// Alternative approach using embedded documents (recommended for MongoDB)
+model AboutUser {
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  name             String?
+  title            String?
+  resume           String?  // <- This field might be missing
+  bio              String?
+  quote            String?
+  userImg          String?
+  skillCategories  SkillCategory[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+// Embedded skill category type
+type SkillCategory {
+  id     String
+  title  String
+  skills Skill[]
+}
+
+// Embedded skill type
+type Skill {
+  id   String
+  name String
+}
