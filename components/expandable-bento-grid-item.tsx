@@ -18,6 +18,14 @@ export const ExpandableBentoGridItem: React.FC<BentoGridItemProps> = ({
   const [open, setOpen] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const handleClose = (): void => {
+    setOpen(false);
+  };
+
+  const handleOpen = (): void => {
+    setOpen(true);
+  };
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent): void {
       if (event.key === "Escape") {
@@ -35,15 +43,8 @@ export const ExpandableBentoGridItem: React.FC<BentoGridItemProps> = ({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
-  useOutsideClick(containerRef, () => handleClose());
-
-  const handleOpen = (): void => {
-    setOpen(true);
-  };
-
-  const handleClose = (): void => {
-    setOpen(false);
-  };
+  // Use the hook only when containerRef.current is not null
+  useOutsideClick(containerRef as React.RefObject<HTMLDivElement>, handleClose);
 
   return (
     <>
