@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Helper function to safely get error message
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message
+  }
+  return String(error)
+}
+
 export async function GET() {
   console.log('🔍 GET /api/about called')
   
@@ -33,7 +41,7 @@ export async function GET() {
     return NextResponse.json(
       { 
         message: 'Failed to fetch about user info',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? getErrorMessage(error) : undefined
       },
       { status: 500 }
     )
