@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import jwt from 'jsonwebtoken'
 
+// Helper function to safely get error message
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message
+  }
+  return String(error)
+}
+
 // GET about user info
 export async function GET() {
   console.log('🔍 GET /api/about called')
@@ -35,7 +43,7 @@ export async function GET() {
     return NextResponse.json(
       { 
         message: 'Failed to fetch about user info',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? getErrorMessage(error) : undefined
       },
       { status: 500 }
     )
@@ -64,7 +72,7 @@ export async function POST(request: NextRequest) {
       decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key')
       console.log('✅ Token verified')
     } catch (jwtError) {
-      console.log('❌ Invalid token:', jwtError.message)
+      console.log('❌ Invalid token:', getErrorMessage(jwtError))
       return NextResponse.json(
         { message: 'Invalid token' },
         { status: 401 }
@@ -125,7 +133,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { 
         message: 'Failed to save about user info',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? getErrorMessage(error) : undefined
       },
       { status: 500 }
     )
