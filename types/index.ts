@@ -153,8 +153,8 @@ export interface ProjectData {
   author?: string;
   featured: boolean;
   technologies: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SkillData {
