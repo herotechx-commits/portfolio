@@ -46,12 +46,20 @@ export const ExpandableBentoGridItem: React.FC<BentoGridItemProps> = ({
   // Use the hook only when containerRef.current is not null
   useOutsideClick(containerRef as React.RefObject<HTMLDivElement>, handleClose);
 
-  // Filter out conflicting animation event handlers
+  // Filter out conflicting event handlers between React DOM and Framer Motion
   const {
     onAnimationStart,
     onAnimationEnd,
     onAnimationIteration,
     onTransitionEnd,
+    onDragStart,
+    onDragEnd,
+    onDrag,
+    onDragEnter,
+    onDragExit,
+    onDragLeave,
+    onDragOver,
+    onDrop,
     ...filteredProps
   } = props;
 
