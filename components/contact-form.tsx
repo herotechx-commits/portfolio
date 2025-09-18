@@ -26,7 +26,7 @@ interface FormErrors {
   message?: string;
 }
 
-export function ContactForm(): JSX.Element {
+export function ContactForm(): React.ReactElement {
   const [state, handleSubmit] = useForm("mldwznve");
   const [formData, setFormData] = useState<FormData>({
     name: "",
