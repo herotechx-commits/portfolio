@@ -71,8 +71,6 @@ export function ProjectContent() {
             projectGithub={project?.projectGithub || ''}
             projectLink={project?.projectLink || ''}
             projectDescription={project?.projectDescription || ''}
-            projectAuthor={getAuthorName(project?.projectAuthor)}
-            authorId={project.authorId}
           />
         ))}
       </div>
