@@ -33,7 +33,7 @@ export interface ContactMethod {
   textColor: string;
 }
 
-export interface BentoGridItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface BentoGridItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content'> {
   className?: string;
   title: string;
   description: ReactNode;
