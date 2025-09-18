@@ -46,6 +46,15 @@ export const ExpandableBentoGridItem: React.FC<BentoGridItemProps> = ({
   // Use the hook only when containerRef.current is not null
   useOutsideClick(containerRef as React.RefObject<HTMLDivElement>, handleClose);
 
+  // Filter out conflicting animation event handlers
+  const {
+    onAnimationStart,
+    onAnimationEnd,
+    onAnimationIteration,
+    onTransitionEnd,
+    ...filteredProps
+  } = props;
+
   return (
     <>
       <AnimatePresence>
@@ -96,7 +105,7 @@ export const ExpandableBentoGridItem: React.FC<BentoGridItemProps> = ({
         )}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        {...props}
+        {...filteredProps}
       >
         {header}
         <div className="group-hover/bento:translate-x-2 transition duration-200">
