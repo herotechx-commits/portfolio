@@ -62,18 +62,18 @@ export default function AboutUser() {
         className="flex items-center space-x-4 mb-6"
       >
         <motion.div 
-  whileHover={{ scale: 1.1, rotate: 5 }}
-  transition={{ type: "spring", stiffness: 300 }}
-  className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg overflow-hidden"
->
-  <Image 
-    src={aboutUser?.userImg || '/default-avatar.png'} 
-    alt={aboutUser?.name || 'User avatar'} 
-    width={96} 
-    height={96} 
-    className='w-full h-full object-cover' 
-  />
-</motion.div>
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg overflow-hidden"
+        >
+          <Image 
+            src={aboutUser?.userImg || '/default-avatar.png'} 
+            alt={aboutUser?.name || 'User avatar'} 
+            width={96} 
+            height={96} 
+            className='w-full h-full object-cover' 
+          />
+        </motion.div>
         
         <div className='py-5'>
           <div className="flex gap-10 items-center">
@@ -99,14 +99,7 @@ export default function AboutUser() {
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  delay: 0.3,
-                  hover: { 
-                    type: "spring", 
-                    stiffness: 400, 
-                    damping: 10 
-                  }
-                }}
+                transition={{ delay: 0.3 }}
                 className="group relative overflow-hidden"
               >
                 {/* Animated background gradient */}
